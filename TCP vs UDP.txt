@@ -1,0 +1,3 @@
+Estou usando o protocolo TCP ao invés do UDP. UDP é mais rápido, mas ele pode ter perdas no caminho (ele é mais utilizado para streaming). O TCP é um pouco mais lento, porém garante a entrega do pacote, em outras palavras, não existe perdas (ele conta com mais coisas, como: bit de acknowledge, sequência).
+
+https://microchip.wikidot.com/tcpip:tcp-vs-udp
