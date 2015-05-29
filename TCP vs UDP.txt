@@ -1,5 +1,0 @@
-I am using TCP instead of UDP. The UDP is faster, but it can have losses on the way (it is more used to streaming, for example).
-The TCP is a little slower but ensures the delivery of the packages. In other words, there is no loss (it has more things in his
-header: acknowledge bit, sequence number, etc...).
-
-https://microchip.wikidot.com/tcpip:tcp-vs-udp3
