@@ -66,8 +66,8 @@ while True:
     # Wait for a "TPV" report and display the current time
     if report["class"] == "TPV":
         if hasattr(report, "time"):            
-            print "Trimpot:" trimpot
+            print "Trimpot: ", trimpot
             
             # Send data
-            print "Sending " report.time
+            print "Sending ", report.time
             sent = sock.sendto(report.time, serverAddress)
