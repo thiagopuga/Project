@@ -2,6 +2,8 @@ import gps
 import RPi.GPIO as GPIO
 import socket
 
+GPIO.setwarnings(False)
+
 # 10K trimpot connected to ADC #0
 POTENTIOMETER_ADC = 0;
 
@@ -66,7 +68,7 @@ while True:
     # Wait for a "TPV" report and display the current time
     if report["class"] == "TPV":
         if hasattr(report, "time"):            
-            print "Trimpot: ", trimpot
+            print "Trimpot ", trimpot
             
             # Send data
             print "Sending ", report.time
