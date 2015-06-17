@@ -56,7 +56,7 @@ def readAdc(adcNum, clockPin, mosiPin, misoPin, csPin):
 # Create a UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-serverAddress = ("169.254.0.2", 10000)
+serverAddress = ("169.254.0.1", 10000)
  
 # Listen on port 2947 (gpsd) of localhost
 session = gps.gps("localhost", "2947")
@@ -69,22 +69,11 @@ while True:
 
         # Wait for a "TPV" report and display the current time
         if report["class"] == "TPV":
-                if hasattr(report, "time"):
-
-                        # Test
-                        print "Trimpot ", trimpot
-                        print report.time
-
-                        time = str(report.time)
-
-                        values = (time, trimpot)
-                        s = struct.Struct("24s I")
-                        #values = (report.time.encode("unicode-internal"), trimpot)
-                        #s = struct.Struct("96s I")      # 4 b * 24 (4 bytes for each character)
+                if hasattr(report, "time"):                        
+                        
+                        values = (str(report.time), trimpot)
+                        s = struct.Struct("24s I") # 1 byte per character = 24 bytes
                         packedData = s.pack(*values)
-
-                        # Test
-                        print 'Uses           :', s.size, 'bytes'
 
                         # Send data
                         print "Sending ", packedData
