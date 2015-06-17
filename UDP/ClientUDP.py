@@ -4,20 +4,20 @@ import sys
 # Create a UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-server_address = ('169.254.0.2', 10000)
+server_address = ("169.254.0.1", 10000)
+message = "This is the message. It will be repeated."
 
 try:
 
     # Send data
-    message = 'This is the message. It will be repeated.'
-    print('sending "%s"' % message, file=sys.stderr)
-    sent = sock.sendto(message.encode(), server_address)
+    print >>sys.stderr, "sending %s" % message
+    sent = sock.sendto(message, server_address)
 
     # Receive response
-    print('waiting to receive', file=sys.stderr)
+    print >>sys.stderr, "waiting to receive"
     data, server = sock.recvfrom(4096)
-    print('received "%s"' % data.decode('utf-8'), file=sys.stderr)
+    print >>sys.stderr, "received %s" % data
 
 finally:
-    print('closing socket', file=sys.stderr)
+    print >>sys.stderr, "closing socket"
     sock.close()

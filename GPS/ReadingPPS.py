@@ -4,6 +4,7 @@ PPS_PIN = 12
 
 # Setup GPIO using Board numbering
 GPIO.setmode(GPIO.BOARD)
+
 GPIO.setup(PPS_PIN, GPIO.IN)
 
 while True:
