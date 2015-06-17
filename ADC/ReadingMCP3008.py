@@ -54,10 +54,10 @@ while True:
         start = time.time()
 
         # Read the analog pin
-        trimpot = readadc(ADC_CH, SPICLK, SPIMOSI, SPIMISO, SPICS)
+        trimpot = readAdc(POTENTIOMETER_ADC, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
 
         end = time.time()
         print end - start
-        print "trimpot ", trimpot
+        #print "trimpot ", trimpot
 
         #time.sleep(0.025)
