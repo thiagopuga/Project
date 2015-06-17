@@ -24,7 +24,7 @@ GPIO.setup(SPI_CLK, GPIO.OUT)
 GPIO.setup(SPI_CS, GPIO.OUT)
 
 def readAdc(adcNum, clockPin, mosiPin, misoPin, csPin):
-        if ((adcnum > 7) or (adcnum < 0)):
+        if ((adcNum > 7) or (adcNum < 0)):
                 return -1
         GPIO.output(csPin, True)
         GPIO.output(clockPin, False)    # Start clock low

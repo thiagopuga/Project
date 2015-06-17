@@ -22,7 +22,7 @@ GPIO.setup(SPI_CS, GPIO.OUT)
 
 # Read SPI data from MCP3008 chip, 8 possible ADC's (0 thru 7)
 def readAdc(adcNum, clockPin, mosiPin, misoPin, csPin):
-        if ((adcnum > 7) or (adcnum < 0)):
+        if ((adcNum > 7) or (adcNum < 0)):
                 return -1
         GPIO.output(csPin, True)
         GPIO.output(clockPin, False)    # Start clock low
