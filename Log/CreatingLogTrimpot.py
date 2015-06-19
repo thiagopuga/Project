@@ -1,12 +1,11 @@
-import gps
 import RPi.GPIO as GPIO
-import socket
-import struct
+import time
 
-# 10K Trimpot connected to ADC #0
+# 10K trimpot connected to ADC #0
 POTENTIOMETER_ADC = 0;
 
-# SPI interface pins connected to ADC
+# Change these as desired - they're the pins connected from the
+# SPI port on the ADC to the Cobbler
 SPI_CLK = 23
 SPI_MISO = 21
 SPI_MOSI = 19
@@ -56,35 +55,21 @@ def readAdc(adcNum, clockPin, mosiPin, misoPin, csPin):
         adcOut >>= 1                    # First bit is "null" so drop it
         
         return adcOut
- 
-# Listen on port 2947 (gpsd) of localhost
-session = gps.gps("localhost", "2947")
-session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
-
-# Create a UDP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-serverAddress = ("169.254.0.1", 10000)
 
 # Create/open file
-log = open("example.log", 'w')
+log = open("exampleTrimpot.log", 'w')
 
-while True:
-        report = session.next()
-        
+#while True:
+for i in range(0, 5000):        
+
+        start = time.time()
+
         # Read the analog pin
         trimpot = readAdc(POTENTIOMETER_ADC, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
 
-        # Wait for a "TPV" report and display the current time
-        if report["class"] == "TPV":
-                if hasattr(report, "time"):                        
-                        
-                        values = (str(report.time), trimpot)
-                        s = struct.Struct("24s I") # 1 byte per character = 24 bytes
-                        packedData = s.pack(*values)
+        end = time.time()
 
-                        # Send data
-                        print "Sending ", packedData
-                        sent = sock.sendto(packedData, serverAddress)
+        elapsed = end - start
 
-                        # Write file
-                        log.write(s + "\n")
+        # Write file
+        log.write(str(trimpot) + "  " + str(elapsed * 1000) + "\n")
