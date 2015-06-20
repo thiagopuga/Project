@@ -57,13 +57,13 @@ def readAdc(adcNum, clockPin, mosiPin, misoPin, csPin):
         return adcOut
 
 while True:
-        start = time.time()
+        #start = time.time()
 
         # Read the analog pin
         trimpot = readAdc(POTENTIOMETER_ADC, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
 
-        end = time.time()
-        print end - start
-        #print "trimpot ", trimpot
+        #end = time.time()
+        #print end - start
+        print "trimpot ", trimpot
 
         #time.sleep(0.025)
