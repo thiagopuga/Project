@@ -2,6 +2,7 @@ import gps
 import RPi.GPIO as GPIO
 import socket
 import struct
+import sys
 
 # 10K Trimpot connected to ADC #0
 POTENTIOMETER_ADC = 0;
@@ -56,14 +57,14 @@ def readAdc(adcNum, clockPin, mosiPin, misoPin, csPin):
         adcOut >>= 1                    # First bit is "null" so drop it
         
         return adcOut
- 
+
 # Listen on port 2947 (gpsd) of localhost
 session = gps.gps("localhost", "2947")
 session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
 
 # Create a UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-serverAddress = ("169.254.0.1", 10000)
+serverAddress = ("169.254.0.1", 10001)
 
 # Create/open file
 log = open("example.log", 'w')
@@ -77,7 +78,7 @@ while True:
         # Wait for a "TPV" report and display the current time
         if report["class"] == "TPV":
                 if hasattr(report, "time"):                        
-                        
+
                         values = (str(report.time), trimpot)
                         s = struct.Struct("24s I") # 1 byte per character = 24 bytes
                         packedData = s.pack(*values)
@@ -87,4 +88,4 @@ while True:
                         sent = sock.sendto(packedData, serverAddress)
 
                         # Write file
-                        log.write(s + "\n")
+                        log.write(report.time + str(trimpot) + "\n")
