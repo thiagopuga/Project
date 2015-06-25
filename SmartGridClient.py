@@ -3,6 +3,9 @@ import serial
 import socket
 import sys
 
+# Raspberry Pi ID
+ID = str(1)
+
 # 10K Trimpot connected to ADC #0
 POTENTIOMETER_ADC = 0;
 
@@ -77,46 +80,43 @@ try:
             if "\r\n" in resp:        
                 if "$GPRMC" in resp:                        
                     data = resp.split(',')                    
-                    if data[2] == 'A':
-                            
+                    if data[2] == 'A':                            
                         # Read the analog pin
                         trimpot = readAdc(POTENTIOMETER_ADC, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
-
-                        # Test
-                        # print data[1]
-                            
+                        # Get time
+                        hour = data[1][0:2]
+                        min = data[1][2:4]
+                        sec = data[1][4:6]
+                        mil = data[1][7:10]                        
+                        time = "%s%s%s%s" % (hour, min, sec, mil)
+                        # Get coordinates
+                        latitude = data[3][0:4] + data[3][5:9]
+                        hemisphere = data[4]
+                        longitude = data[5][0:5] + data[5][6:10]
+                        side = data[6]
+                        coordinates = "%s%s%s%s" % (latitude, hemisphere, longitude, side)
+                        # Get date
                         day = data[9][0:2]
                         month = data[9][2:4]
                         year = int(data[9][4:6]) + 2000
                         date = "%s-%s-%d" % (month, day, year)
-                        hour = data[1][0:2]
-                        min = data[1][2:4]
-                        sec = data[1][4:6]
-                        mil = data[1][7:10]
-                        
-                        time = "%s%s%s%s" % (hour, min, sec, mil)
-
-                        string = time + str(trimpot)
-
+                        string = ID + time + coordinates + str(trimpot)
                         # Send data
                         print "Sending", string
-                        sent = sock.sendto(string, serverAddress)
-                        
+                        sent = sock.sendto(string, serverAddress)                        
                         # Create a log file
                         if date != name:
                             if name != "":
                                 file.close()                           
                             name = date
-                            file = open(name + ".log", 'w')
-                            
+                            file = open(name + ".log", 'w')      
                         # Write on log
-                        file.write(string + "\n")
-
-                    resp = ""
+                        file.write(string + "\n")                        
+                resp = ""
 
 except:
-        print sys.exc_info()#[0]
-
+        print sys.exc_info()
+        
 finally:
         print >>sys.stderr, 'closing socket'
         sock.close()
