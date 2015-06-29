@@ -5,7 +5,7 @@ try:
     serial = serial.Serial("/dev/ttyAMA0", baudrate=9600, timeout=3)
     
 except:
-    print "Error opening serial port."
+    print "error opening serial port"
 
 resp = ""
 name = ""

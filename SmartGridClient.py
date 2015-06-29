@@ -3,11 +3,11 @@ import serial
 import socket
 import sys
 
-# Raspberry Pi ID
+# ID
 ID = str(1)
 
-# 10K Trimpot connected to ADC #0
-POTENTIOMETER_ADC = 0;
+# ADC channel
+ADC_CH = 0;
 
 # SPI interface pins connected to ADC
 SPI_CLK = 23
@@ -17,7 +17,6 @@ SPI_CS = 24
 
 # Setup GPIO using Board numbering
 GPIO.setmode(GPIO.BOARD)
-
 # Set up the SPI interface pins
 GPIO.setup(SPI_MOSI, GPIO.OUT)
 GPIO.setup(SPI_MISO, GPIO.IN)
@@ -64,11 +63,11 @@ def readAdc(adcNum, clockPin, mosiPin, misoPin, csPin):
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 serverAddress = ("169.254.0.1", 10000)
 
+# Connect with serial port
 try:
     serial = serial.Serial("/dev/ttyAMA0", baudrate=9600)
-    
 except:
-    print "Error opening serial port."
+    print "error opening serial port"
 
 resp = ""
 name = ""
@@ -82,7 +81,7 @@ try:
                     data = resp.split(',')                    
                     if data[2] == 'A':                            
                         # Read the analog pin
-                        trimpot = readAdc(POTENTIOMETER_ADC, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
+                        trimpot = readAdc(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
                         # Get time
                         hour = data[1][0:2]
                         min = data[1][2:4]
