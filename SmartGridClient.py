@@ -109,9 +109,9 @@ try:
                             if name != "":
                                 file.close()                           
                             name = date
-                            file = open(name + ".log", 'w')      
+                            file = open(name + ".log", 'a')      
                         # Write on log
-                        file.write(string + "\n")                        
+                        file.write(string + "\n")                       
                 resp = ""
 
 except:
@@ -122,3 +122,4 @@ finally:
         sock.close()
         print >>sys.stderr, 'closing serial'
         serial.close()
+        GPIO.cleanup()
