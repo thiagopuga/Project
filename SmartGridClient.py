@@ -3,8 +3,11 @@ import serial
 import socket
 import sys
 
+# Set warnings off
+GPIO.setwarnings(False)
+
 # ID
-ID = str(1)
+RASP_ID = '1'
 
 # ADC channel
 ADC_CH = 0;
@@ -70,55 +73,41 @@ except:
     print "error opening serial port"
 
 resp = ""
-name = ""
 
 try:
     while True:
         while (serial.inWaiting() > 0):
             resp += serial.read()          
             if "\r\n" in resp:        
-                if "$GPRMC" in resp:                        
+                if "$GPRMC" in resp:
+                    # Read the analog pin
+                    trimpot = readAdc(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
                     data = resp.split(',')                    
-                    if data[2] == 'A':                            
-                        # Read the analog pin
-                        trimpot = readAdc(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
-                        # Get time
-                        hour = data[1][0:2]
-                        min = data[1][2:4]
-                        sec = data[1][4:6]
-                        mil = data[1][7:10]                        
-                        time = "%s%s%s%s" % (hour, min, sec, mil)
-                        # Get coordinates
-                        latitude = data[3][0:4] + data[3][5:9]
-                        hemisphere = data[4]
-                        longitude = data[5][0:5] + data[5][6:10]
-                        side = data[6]
-                        coordinates = "%s%s%s%s" % (latitude, hemisphere, longitude, side)
-                        # Get date
-                        day = data[9][0:2]
-                        month = data[9][2:4]
-                        year = int(data[9][4:6]) + 2000
-                        date = "%s-%s-%d" % (month, day, year)
-                        string = ID + time + coordinates + str(trimpot)
-                        # Send data
-                        print "Sending", string
-                        sent = sock.sendto(string, serverAddress)                        
-                        # Create a log file
-                        if date != name:
-                            if name != "":
-                                file.close()                           
-                            name = date
-                            file = open(name + ".log", 'a')      
-                        # Write on log
-                        file.write(string + "\n")                       
+                    time = data[1]
+                    status = data[2]    # Status, V=Navigation receiver warning A=Valid
+                    latitude = data[3]
+                    hemisphere = data[4]
+                    longitude = data[5]
+                    side = data[6]
+                    day = data[9][0:2]
+                    month = data[9][2:4]
+                    year = int(data[9][4:6]) + 2000
+                    date = "%s-%s-%d" % (month, day, year)
+                    # Create string
+                    string = date + "," + RASP_ID + time + status + latitude + hemisphere + longitude + side + str(trimpot)
+                    # Remove dots
+                    string = string.replace('.', '')
+                    # Send data
+                    print "sending", string
+                    sent = sock.sendto(string, serverAddress)                    
                 resp = ""
 
 except:
-        print sys.exc_info()
+    print sys.exc_info()
         
 finally:
-        print >>sys.stderr, 'closing socket'
-        sock.close()
-        print >>sys.stderr, 'closing serial'
-        serial.close()
-        GPIO.cleanup()
+    print >>sys.stderr, 'closing socket'
+    sock.close()
+    print >>sys.stderr, 'closing serial'
+    serial.close()
+    GPIO.cleanup()

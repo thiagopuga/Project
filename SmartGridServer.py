@@ -9,15 +9,29 @@ server_address = ("169.254.0.1", 10000)
 print >>sys.stderr, "starting up on %s port %s" % server_address
 sock.bind(server_address)
 
-while True:
-    print >>sys.stderr, "waiting to receive message"
-    data, address = sock.recvfrom(4096)
-    print >>sys.stderr, "received %s bytes from %s" % (len(data), address)
-    hour = data[0:2]
-    min = data[2:4]
-    sec = data[4:6]
-    mil = data[6:9]
-    time = "%s:%s:%s.%s" % (hour, min, sec, mil)
-    trimpot = data[9:13]
-    data = time + " " + trimpot
-    print >>sys.stderr, data
+fileName = ""
+
+try:
+    while True:
+        print >>sys.stderr, "waiting to receive message"
+        data, address = sock.recvfrom(4096)
+        print >>sys.stderr, "received %s bytes from %s" % (len(data), address)
+        # Split data
+        data = resp.split(',')
+        date = data[0]
+        string = date[1]
+        # Create a log file    
+        if date != fileName:
+            if fileName != "":
+                file.close()                           
+            fileName = date
+            file = open(fileName + ".log", 'a')     
+        # Write on log
+        file.write(string + "\n")
+
+except:
+    print sys.exc_info()
+
+finally:
+    print >>sys.stderr, 'closing socket'
+    sock.close()
