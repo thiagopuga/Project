@@ -82,7 +82,7 @@ try:
                 if "$GPRMC" in resp:
                     # Read the analog pin
                     trimpot = readAdc(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
-                    data = resp.split(',')                    
+                    data = resp.split(',')
                     time = data[1]
                     status = data[2]    # Status, V=Navigation receiver warning A=Valid
                     latitude = data[3]
