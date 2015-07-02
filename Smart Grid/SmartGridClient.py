@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import serial
 import socket
 import sys
+import time
 
 # Set warnings off
 GPIO.setwarnings(False)
@@ -80,26 +81,29 @@ try:
             resp += serial.read()          
             if "\r\n" in resp:        
                 if "$GPRMC" in resp:
-                    # Read the analog pin
-                    trimpot = readAdc(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
                     data = resp.split(',')
-                    time = data[1]
-                    status = data[2]    # Status, V=Navigation receiver warning A=Valid
-                    latitude = data[3]
-                    hemisphere = data[4]
-                    longitude = data[5]
-                    side = data[6]
-                    day = data[9][0:2]
-                    month = data[9][2:4]
-                    year = int(data[9][4:6]) + 2000
-                    date = "%s-%s-%d" % (month, day, year)
-                    # Create string
-                    string = date + "," + RASP_ID + time + status + latitude + hemisphere + longitude + side + str(trimpot)
-                    # Remove dots
-                    string = string.replace('.', '')
-                    # Send data
-                    print "sending", string
-                    sent = sock.sendto(string, serverAddress)                    
+                    # Status, V=Navigation receiver warning
+                    if data[2] == 'A':
+                            # Read the analog pin
+                            trimpot = readAdc(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
+                            time = data[1]
+                            latitude = data[3]
+                            hemisphere = data[4]
+                            longitude = data[5]
+                            side = data[6]
+                            day = data[9][0:2]
+                            month = data[9][2:4]
+                            year = int(data[9][4:6]) + 2000
+                            date = "%s-%s-%d" % (month, day, year)
+                            # Create string
+                            string = date + "," + RASP_ID + time + latitude + hemisphere + longitude + side + str(trimpot)
+                            # Remove dots
+                            string = string.replace('.', '')
+                            # Send data
+                            print "sending", string
+                            sent = sock.sendto(string, serverAddress)
+                    else:
+                            print time.strftime("%c")
                 resp = ""
 
 except:
