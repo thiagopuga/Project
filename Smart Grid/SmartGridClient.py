@@ -10,6 +10,10 @@ GPIO.setwarnings(False)
 # ID
 RASP_ID = '1'
 
+# Time sources
+GPS = 'G'
+SO = 'S'
+
 # ADC channel
 ADC_CH = 0;
 
@@ -81,11 +85,11 @@ try:
             resp += serial.read()          
             if "\r\n" in resp:        
                 if "$GPRMC" in resp:
+                    # Read the analog pin
+                    trimpot = readAdc(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
                     data = resp.split(',')
-                    # Status, V=Navigation receiver warning
+                    # Status, V=Navigation receiver warning A=Valid
                     if data[2] == 'A':
-                            # Read the analog pin
-                            trimpot = readAdc(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
                             time = data[1]
                             latitude = data[3]
                             hemisphere = data[4]
@@ -96,14 +100,17 @@ try:
                             year = int(data[9][4:6]) + 2000
                             date = "%s-%s-%d" % (month, day, year)
                             # Create string
-                            string = date + "," + RASP_ID + time + latitude + hemisphere + longitude + side + str(trimpot)
+                            string = date + "," + RASP_ID + GPS + time + latitude + hemisphere + longitude + side + str(trimpot)
                             # Remove dots
                             string = string.replace('.', '')
-                            # Send data
-                            print "sending", string
-                            sent = sock.sendto(string, serverAddress)
                     else:
-                            print time.strftime("%c")
+                            date = time.strftime("%m-%d-%Y")
+                            time = time.strftime("%H%M%S")
+                            # Create string
+                            string = date + "," + RASP_ID + SO + time + str(trimpot)
+                    # Send data
+                    print "sending", string
+                    sent = sock.sendto(string, serverAddress)                            
                 resp = ""
 
 except:
