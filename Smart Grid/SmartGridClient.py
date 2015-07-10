@@ -12,7 +12,7 @@ RASP_ID = '1'
 
 # Time sources
 GPS = 'G'
-SO = 'S'
+OS = 'O'
 
 # ADC channel
 ADC_CH = 0;
@@ -107,7 +107,7 @@ try:
                             date = time.strftime("%m-%d-%Y")
                             time = time.strftime("%H%M%S")
                             # Create string
-                            string = date + "," + RASP_ID + SO + time + str(trimpot)
+                            string = date + "," + RASP_ID + OS + time + str(trimpot)
                     # Send data
                     print "sending", string
                     sent = sock.sendto(string, serverAddress)                            
