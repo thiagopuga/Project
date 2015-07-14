@@ -1,8 +1,8 @@
 import serial
 import sys
 
-START_TIME = 215500000
-END_TIME = 220000000
+START_TIME = 224900000
+END_TIME = 225000000
 
 def readGPS():
     resp = ""
