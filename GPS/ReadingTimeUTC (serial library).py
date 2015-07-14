@@ -8,7 +8,6 @@ except:
     print "error opening serial port"
 
 resp = ""
-name = ""
 
 try:
     while True:

@@ -21,7 +21,7 @@ GPIO.setup(SPI_CLK, GPIO.OUT)
 GPIO.setup(SPI_CS, GPIO.OUT)
 
 # Read SPI data from MCP3008 chip, 8 possible ADC's (0 thru 7)
-def readAdc(adcNum, clockPin, mosiPin, misoPin, csPin):
+def readADC(adcNum, clockPin, mosiPin, misoPin, csPin):
         
         if ((adcNum > 7) or (adcNum < 0)):
                 return -1
@@ -60,7 +60,7 @@ while True:
         #start = time.time()
 
         # Read the analog pin
-        trimpot = readAdc(POTENTIOMETER_ADC, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
+        trimpot = readADC(POTENTIOMETER_ADC, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
 
         #end = time.time()
         #print end - start

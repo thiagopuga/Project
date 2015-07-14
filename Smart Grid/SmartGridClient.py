@@ -32,7 +32,7 @@ GPIO.setup(SPI_CLK, GPIO.OUT)
 GPIO.setup(SPI_CS, GPIO.OUT)
 
 # Read SPI data from MCP3008 chip, 8 possible ADC's (0 thru 7)
-def readAdc(adcNum, clockPin, mosiPin, misoPin, csPin):
+def readADC(adcNum, clockPin, mosiPin, misoPin, csPin):
         
         if ((adcNum > 7) or (adcNum < 0)):
                 return -1
@@ -86,7 +86,7 @@ try:
             if "\r\n" in resp:        
                 if "$GPRMC" in resp:
                     # Read the analog pin
-                    trimpot = readAdc(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
+                    trimpot = readADC(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
                     data = resp.split(',')
                     # Status, V=Navigation receiver warning A=Valid
                     if data[2] == 'A':
