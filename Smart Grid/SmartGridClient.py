@@ -63,28 +63,28 @@ def readADC(adcNum, clockPin, mosiPin, misoPin, csPin):
                         adcOut |= 0x1
                         
         GPIO.output(csPin, True)
-        adcOut >>= 1                    # First bit is "null" so drop it
+        adcOut >>= 1                    # First bit is 'null' so drop it
         
         return adcOut
 
 # Create a UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-serverAddress = ("169.254.0.1", 10000)
+serverAddress = ('169.254.0.1', 10000)
 
 # Connect with serial port
 try:
-    serial = serial.Serial("/dev/ttyAMA0", baudrate=9600)
+    serial = serial.Serial('/dev/ttyAMA0', baudrate=9600)
 except:
-    print "error opening serial port"
+    print 'error opening serial port'
 
-resp = ""
+resp = ''
 
 try:
     while True:
         while (serial.inWaiting() > 0):
             resp += serial.read()          
-            if "\r\n" in resp:        
-                if "$GPRMC" in resp:
+            if '\r\n' in resp:        
+                if '$GPRMC' in resp:
                     # Read the analog pin
                     trimpot = readADC(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
                     data = resp.split(',')
@@ -98,20 +98,20 @@ try:
                             day = data[9][0:2]
                             month = data[9][2:4]
                             year = int(data[9][4:6]) + 2000
-                            date = "%s-%s-%d" % (month, day, year)
+                            date = '%s-%s-%d' % (month, day, year)
                             # Create string
-                            string = date + "," + RASP_ID + GPS + time + latitude + hemisphere + longitude + side + str(trimpot)
+                            string = date + ',' + RASP_ID + GPS + time + latitude + hemisphere + longitude + side + str(trimpot)
                             # Remove dots
                             string = string.replace('.', '')
                     else:
-                            date = time.strftime("%m-%d-%Y")
-                            time = time.strftime("%H%M%S")
+                            date = time.strftime('%m-%d-%Y')
+                            time = time.strftime('%H%M%S')
                             # Create string
-                            string = date + "," + RASP_ID + OS + time + str(trimpot)
+                            string = date + ',' + RASP_ID + OS + time + str(trimpot)
                     # Send data
-                    print "sending", string
+                    print 'sending', string
                     sent = sock.sendto(string, serverAddress)                            
-                resp = ""
+                resp = ''
 
 except:
     print sys.exc_info()

@@ -52,7 +52,7 @@ def readADC(adcNum, clockPin, mosiPin, misoPin, csPin):
                         adcOut |= 0x1
                         
         GPIO.output(csPin, True)
-        adcOut >>= 1                    # First bit is "null" so drop it
+        adcOut >>= 1                    # First bit is 'null' so drop it
         
         return adcOut
 
@@ -64,6 +64,6 @@ while True:
 
         #end = time.time()
         #print end - start
-        print "trimpot ", trimpot
+        print 'trimpot ', trimpot
 
         #time.sleep(0.025)

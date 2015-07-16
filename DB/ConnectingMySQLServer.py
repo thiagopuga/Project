@@ -28,12 +28,12 @@ for instance in ec2_us_west_2.instances.all():
 ##        'pi', 'raspberry', 'pi');    
 ##    cur = con.cursor()
 ##    
-##    #sql = "insert into data(RaspID, time) values(2, 113255000)"
+##    #sql = 'insert into data(RaspID, time) values(2, 113255000)'
 ##    #print sql
-##    cur.execute("SHOW DATABASES")
-##    #print "Rows inserted: %s" % cur.rowcount
+##    cur.execute('SHOW DATABASES')
+##    #print 'Rows inserted: %s' % cur.rowcount
 ##    #con.commit()
 ##
 ##except:
-##    print "Error opening database."
+##    print 'Error opening database.'
 ##    sys.exit(1)
