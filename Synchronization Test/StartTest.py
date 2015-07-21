@@ -12,8 +12,8 @@ message = 'start'
 try:
     # Send data
     print >>sys.stderr, 'sending %s' % message
-    sent = sock.sendto(message, server_address1)
     sent = sock.sendto(message, server_address2)
+    sent = sock.sendto(message, server_address1)
     
 finally:
     print >>sys.stderr, 'closing socket'

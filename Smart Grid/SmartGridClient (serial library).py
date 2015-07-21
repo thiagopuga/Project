@@ -1,8 +1,6 @@
 import RPi.GPIO as GPIO
 import serial
 import socket
-import sys
-import time
 
 # Set warnings off
 GPIO.setwarnings(False)
@@ -117,8 +115,8 @@ except:
     print sys.exc_info()
         
 finally:
-    print >>sys.stderr, 'closing socket'
+    print 'closing socket'
     sock.close()
-    print >>sys.stderr, 'closing serial'
+    print 'closing serial'
     serial.close()
     GPIO.cleanup()
