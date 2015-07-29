@@ -1,39 +1,35 @@
-from boto3.session import Session
+import MySQLdb
+import sys
 
-session = Session(aws_access_key_id='AKIAI5BIAF4DH342LPBQ',
-                  aws_secret_access_key='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',
-                  region_name='us-west-2')
+try:
+    con = MySQLdb.connect(host='mydbinstance.cmkub5asq0w1.us-west-2.rds.amazonaws.com',
+                          port=3306,
+                          user='awsuser',
+                          passwd='MyDatabase',
+                          db='SPI');
+    cur = con.cursor()
 
-ec2 = session.resource('ec2')
-ec2_us_west_2 = session.resource('ec2', region_name='us-west-2')
-
-# List all of my EC2 instances in my default region.
-print('Default region:')
-for instance in ec2.instances.all():
-    print(instance.id)
-
-# List all of my EC2 instances in us-west-2.
-print('US West 2 region:')
-for instance in ec2_us_west_2.instances.all():
-    print(instance.id)
-
-
-
-##import MySQLdb
-##import sys
+except:
+    print "error opening database"
+    sys.exit(1)
+    
+##cur.execute('drop table INFO')
 ##
-##try:
-##    con = MySQLdb.connect(
-##        'ec2-user@ec2-52-27-186-72.us-west-2.compute.amazonaws.com',
-##        'pi', 'raspberry', 'pi');    
-##    cur = con.cursor()
-##    
-##    #sql = 'insert into data(RaspID, time) values(2, 113255000)'
-##    #print sql
-##    cur.execute('SHOW DATABASES')
-##    #print 'Rows inserted: %s' % cur.rowcount
-##    #con.commit()
+##cur.execute('create table INFO (ID varchar(2), Date varchar(8), Time varchar(9), Latitude varchar(9), Longitude varchar(9), ADC int(4))')
+##con.commit()
+
+##insertCmd = ('insert into INFO (ID, Date, Time, Longitude, Latitude, ADC)'
+##             'values (%s, %s, %s, %s, %s, %s)')
 ##
-##except:
-##    print 'Error opening database.'
-##    sys.exit(1)
+##data = ('2', '07292015', '112355000', '200122', '12090890', '1023')
+##
+##cur.execute(insertCmd, data)
+##
+##con.commit()
+
+cur.execute('select * from INFO')
+print cur.fetchall()
+
+con.close()
+
+
