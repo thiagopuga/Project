@@ -65,14 +65,12 @@ def readADC(adcNum, clockPin, mosiPin, misoPin, csPin):
         return adcOut
 
 try:
-    print 'OK'
     con = MySQLdb.connect(host='mydbinstance.cmkub5asq0w1.us-west-2.rds.amazonaws.com',
                           port=3306,
                           user='awsuser',
                           passwd='MyDatabase',
                           db='SPI');
     cur = con.cursor()
-    print 'OK'
 
 except:
     print "error opening database"
@@ -110,10 +108,6 @@ while True:
         data = (RASP_ID, date, time, lat, lon, trimpot)
         cur.execute(insertCmd, data)
         con.commit()
-
-        print 'OK'
-
-##        string = RASP_ID + dateTime + str(lat) + str(lon) + '*' + str(trimpot)
         
     except KeyError:
         pass
