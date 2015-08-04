@@ -12,24 +12,20 @@ try:
 except:
     print "error opening database"
     sys.exit(1)
-    
-##cur.execute('drop table INFO')
-##
-##cur.execute('create table INFO (ID varchar(2), Date varchar(8), Time varchar(9), Latitude varchar(9), Longitude varchar(9), ADC int(4))')
-##con.commit()
 
-##insertCmd = ('insert into INFO (ID, Date, Time, Longitude, Latitude, ADC)'
-##             'values (%s, %s, %s, %s, %s, %s)')
-##
-##data = ('2', '07292015', '112355000', '200122', '12090890', '1023')
-##
-##cur.execute(insertCmd, data)
-##
-##con.commit()
+##cur.execute('DELETE FROM INFO WHERE ID = 2')
 
-cur.execute('select * from INFO')
+##cur.execute('DROP TABLE INFO')
+##cur.execute('CREATE TABLE INFO(ID VARCHAR(2), Date VARCHAR(8), Time VARCHAR(9),'
+##            'Latitude VARCHAR(9), Longitude VARCHAR(9), ADC INT(4))')
+
+##cur.execute('INSERT INTO INFO(ID, Date, Time, Longitude, Latitude, ADC)'
+##            'VALUES(2, 07292015, 112355000, 200122, 12090890, 1023)')
+
+cur.execute('SELECT * FROM INFO')
 print cur.fetchall()
 
+con.commit() # Apply changes
 con.close()
 
 
