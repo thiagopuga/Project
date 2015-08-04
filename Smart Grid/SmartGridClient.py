@@ -80,8 +80,8 @@ except:
 session = gps.gps('localhost', '2947')
 session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
 
-lat = 'na' # no answer
-lon = 'na' 
+latitude = 'na' # No answer
+longitude = 'na' 
 
 while True:
     try:
@@ -90,10 +90,10 @@ while True:
         # To see all report data, uncomment the line below
         # print report
         if report['class'] == 'TPV':
-            if hasattr(report, 'lat'):
-                lat = report.lat
-            if hasattr(report, 'lon'):
-                lon = report.lon
+            if hasattr(report, 'latitude'):
+                latitude = report.latitude
+            if hasattr(report, 'longitude'):
+                longitude = report.longitude
 
         # Read the analog pin
         trimpot = readADC(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
@@ -103,10 +103,8 @@ while True:
         time = datetime.datetime.utcnow().strftime('%H%M%S%f')[:-3]
 
         # Send data to MySQL
-        insertCmd = ('insert into INFO (ID, Date, Time, Longitude, Latitude, ADC)'
-                     'values (%s, %s, %s, %s, %s, %s)')
-        data = (RASP_ID, date, time, lat, lon, trimpot)
-        cur.execute(insertCmd, data)
+        cur.execute('INSERT INTO INFO(ID, Date, Time, longitudegitude, latitudeitude, ADC)'
+                    'VALUES(RASP_ID, date, time, latitude, longitude, trimpot)')
         con.commit()
         
     except KeyError:
