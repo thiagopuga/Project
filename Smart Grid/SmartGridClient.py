@@ -2,13 +2,13 @@ import datetime
 import gps
 import MySQLdb
 import RPi.GPIO as GPIO
-import sys
+import time
 
 # Set warnings off
 GPIO.setwarnings(False)
 
 # Raspberry Pi's ID
-RASP_ID = '1'
+RASP_ID = 1
 
 # ADC channel
 ADC_CH = 0;
@@ -65,6 +65,7 @@ def readADC(adcNum, clockPin, mosiPin, misoPin, csPin):
         return adcOut
 
 try:
+    print 'connecting to database...'
     con = MySQLdb.connect(host='mydbinstance.cmkub5asq0w1.us-west-2.rds.amazonaws.com',
                           port=3306,
                           user='awsuser',
@@ -73,8 +74,9 @@ try:
     cur = con.cursor()
 
 except:
-    print "error opening database"
-    sys.exit(1)
+    print 'error opening database'
+
+print 'connected to the database'
 
 # Listen on port 2947 (gpsd) of localhost
 session = gps.gps('localhost', '2947')
@@ -82,6 +84,8 @@ session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
 
 latitude = 'na' # No answer
 longitude = 'na' 
+
+print 'sending data...'
 
 while True:
     try:
@@ -100,12 +104,16 @@ while True:
 
         # Read date and time
         date = datetime.datetime.utcnow().strftime('%m%d%Y')
-        time = datetime.datetime.utcnow().strftime('%H%M%S%f')[:-3]
+        curTime = datetime.datetime.utcnow().strftime('%H%M%S%f')[:-3]
 
         # Send data to MySQL
-        cur.execute('INSERT INTO INFO(ID, Date, Time, longitudegitude, latitudeitude, ADC)'
-                    'VALUES(RASP_ID, date, time, latitude, longitude, trimpot)')
+        cmd = ('INSERT INTO INFO(ID, Date, Time, Latitude, Longitude, ADC)'
+               'VALUES(%s, %s, %s, %s, %s, %s)')
+        data = (RASP_ID, date, curTime, latitude, longitude, trimpot)
+        cur.execute(cmd, data)        
         con.commit()
+        
+        time.sleep(5)           # Sleep for 5 seconds
         
     except KeyError:
         pass
