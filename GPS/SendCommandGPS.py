@@ -12,6 +12,7 @@ resp = ''
 try:
     # PMTK_SET_NMEA_UPDATE_10HZ
     serial.write('$PMTK220,100*2F\r\n')
+    
     # PMTK_SET_NMEA_OUTPUT_RMCONLY
     serial.write('$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n')
     
