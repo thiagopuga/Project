@@ -25,6 +25,8 @@ print cur.fetchall()
 
 ##cur.execute('DELETE FROM INFO WHERE ID = 1')
 ##cur.execute('DELETE FROM INFO WHERE ID = 2')
+##cur.execute('SELECT * FROM INFO')
+##print cur.fetchall()
 
 con.commit() # Apply changes
 con.close()

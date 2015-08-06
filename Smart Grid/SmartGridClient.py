@@ -110,7 +110,7 @@ while True:
         cmd = ('INSERT INTO INFO(ID, Date, Time, Latitude, Longitude, ADC)'
                'VALUES(%s, %s, %s, %s, %s, %s)')
         data = (RASP_ID, date, curTime, latitude, longitude, trimpot)
-        cur.execute(cmd, data)        
+        cur.execute(cmd, data)
         con.commit()
 
         # Sleep for 5 seconds
