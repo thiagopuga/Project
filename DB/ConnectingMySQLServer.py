@@ -13,9 +13,6 @@ except:
     print "error opening database"
     sys.exit(1)
 
-##cur.execute('DELETE FROM INFO WHERE ID = 1')
-##cur.execute('DELETE FROM INFO WHERE ID = 2')
-
 ##cur.execute('DROP TABLE INFO')
 ##cur.execute('CREATE TABLE INFO(ID VARCHAR(2), Date VARCHAR(8), Time VARCHAR(9),'
 ##            'Latitude VARCHAR(9), Longitude VARCHAR(9), ADC INT(4))')
@@ -25,6 +22,9 @@ except:
 
 cur.execute('SELECT * FROM INFO')
 print cur.fetchall()
+
+##cur.execute('DELETE FROM INFO WHERE ID = 1')
+##cur.execute('DELETE FROM INFO WHERE ID = 2')
 
 con.commit() # Apply changes
 con.close()

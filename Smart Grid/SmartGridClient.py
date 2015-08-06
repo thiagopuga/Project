@@ -8,7 +8,7 @@ import time
 GPIO.setwarnings(False)
 
 # Raspberry Pi's ID
-RASP_ID = 1
+RASP_ID = 2
 
 # ADC channel
 ADC_CH = 0;
@@ -112,8 +112,9 @@ while True:
         data = (RASP_ID, date, curTime, latitude, longitude, trimpot)
         cur.execute(cmd, data)        
         con.commit()
-        
-        time.sleep(5)           # Sleep for 5 seconds
+
+        # Sleep for 5 seconds
+        time.sleep(5)
         
     except KeyError:
         pass

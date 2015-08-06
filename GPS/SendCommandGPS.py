@@ -15,6 +15,9 @@ try:
     
     # PMTK_SET_NMEA_OUTPUT_RMCONLY
     serial.write('$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n')
+
+    # PMTK_SET_NMEA_OUTPUT_ALLDATA
+    #serial.write('$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0*28\r\n')    
     
     print 'OK'
     
