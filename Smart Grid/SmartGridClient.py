@@ -94,10 +94,10 @@ while True:
         # To see all report data, uncomment the line below
         # print report
         if report['class'] == 'TPV':
-            if hasattr(report, 'latitude'):
-                latitude = report.latitude
-            if hasattr(report, 'longitude'):
-                longitude = report.longitude
+            if hasattr(report, 'lat'):
+                latitude = str(report.lat)[:11]
+            if hasattr(report, 'lon'):
+                longitude = str(report.lon)[:11]
 
         # Read the analog pin
         trimpot = readADC(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
