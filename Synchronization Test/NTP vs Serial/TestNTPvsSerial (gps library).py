@@ -2,13 +2,14 @@ import datetime
 import gps
 import MySQLdb
 import RPi.GPIO as GPIO
+import socket
 import time
 
 # Set warnings off
 GPIO.setwarnings(False)
 
 # Raspberry Pi's ID
-RASP_ID = 2
+RASP_ID = 1
 
 # ADC channel
 ADC_CH = 0;
@@ -64,6 +65,14 @@ def readADC(adcNum, clockPin, mosiPin, misoPin, csPin):
         
         return adcOut
 
+# Create a UDP/IP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# Bind the socket to the port
+server_address = ('169.254.58.49', 10000)
+print 'starting up on %s port %s' % server_address
+sock.bind(server_address)
+
 try:
     print 'connecting to database...'
     con = MySQLdb.connect(host='mydbinstance.cmkub5asq0w1.us-west-2.rds.amazonaws.com',
@@ -83,43 +92,61 @@ session = gps.gps('localhost', '2947')
 session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
 
 latitude = 'na' # No answer
-longitude = 'na' 
+longitude = 'na'
 
-print 'sending data...'
+# Create a log file    
+file = open('Test.log', 'w')
 
-while True:
-    try:
-        report = session.next()        
-        # Wait for a 'TPV' report and display the current time
-        # To see all report data, uncomment the line below
-        # print report
-        if report['class'] == 'TPV':
-            if hasattr(report, 'lat'):
-                latitude = str(report.lat)[:11]
-            if hasattr(report, 'lon'):
-                longitude = str(report.lon)[:11]
+try:
+    print 'waiting to receive message'
+    data, address = sock.recvfrom(4096)
+    print data
 
-        # Read the analog pin
-        trimpot = readADC(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
-
-        # Read date and time
-        date = datetime.datetime.utcnow().strftime('%m%d%Y')
-        curTime = datetime.datetime.utcnow().strftime('%H%M%S%f')[:-3]
-
-        # Send data to MySQL
-        cmd = ('INSERT INTO INFO(ID, Date, Time, Latitude, Longitude, ADC)'
-               'VALUES(%s, %s, %s, %s, %s, %s)')
-        data = (RASP_ID, date, curTime, latitude, longitude, trimpot)
-        cur.execute(cmd, data)
-        con.commit()
-
-        # Sleep for 5 seconds
-        time.sleep(5)
+    if data == 'start':
+            
+        print 'sending data...'
         
-    except KeyError:
-        pass
-    except KeyboardInterrupt:
-        quit()
-    except StopIteration:
-        session = None
-        print 'GPSD has terminated'
+        while True:
+            try:
+                report = session.next()        
+                # Wait for a 'TPV' report and display the current time
+                # To see all report data, uncomment the line below
+                # print report
+                if report['class'] == 'TPV':
+                    if hasattr(report, 'lat'):
+                        latitude = str(report.lat)[:11]
+                    if hasattr(report, 'lon'):
+                        longitude = str(report.lon)[:11]
+
+                # Read ADC
+                trimpot = readADC(ADC_CH, SPI_CLK, SPI_MOSI, SPI_MISO, SPI_CS)
+
+                # Read date and time
+                date = datetime.datetime.utcnow().strftime('%m%d%Y')
+                curTime = datetime.datetime.utcnow().strftime('%H%M%S%f')[:-3]
+
+                # Send to MySQL
+                cmd = ('INSERT INTO INFO(ID, Date, Time, Latitude, Longitude, ADC)'
+                       'VALUES(%s, %s, %s, %s, %s, %s)')
+                data = (RASP_ID, date, curTime, latitude, longitude, trimpot)
+                cur.execute(cmd, data)
+                con.commit()
+
+                # Write on log
+                file.write(curTime + '\n')
+
+                time.sleep(0.5)
+               
+            except KeyError:
+                pass
+            except KeyboardInterrupt:
+                quit()
+            except StopIteration:
+                session = None
+                print 'GPSD has terminated'
+                
+except:
+    print 'closing socket'
+    sock.close()
+
+
