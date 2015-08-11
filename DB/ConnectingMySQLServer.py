@@ -13,6 +13,7 @@ except:
     print "error opening database"
     sys.exit(1)
 
+
 ##cur.execute('DELETE FROM INFO WHERE ID = 1')
 ##cur.execute('DELETE FROM INFO WHERE ID = 2')
 
@@ -25,10 +26,11 @@ except:
 # gps libray
 ##cur.execute('CREATE TABLE INFO(ID VARCHAR(2), Date VARCHAR(8), Time VARCHAR(9),'
 ##            'Latitude VARCHAR(11), Longitude VARCHAR(11), ADC INT(4))')
+
 ##cur.execute('INSERT INTO INFO(ID, Date, Time, Latitude, Longitude, ADC)'
 ##            'VALUES(3, 07292015, 112355000, 200122, 12090890, 1023)')
 
-cur.execute('SELECT Time FROM INFO WHERE ID = 2')
+cur.execute('SELECT ID, Time FROM INFO')
 print cur.fetchall()
 
 con.commit() # Apply changes
